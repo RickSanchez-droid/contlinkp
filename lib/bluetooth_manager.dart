@@ -6,7 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'virtual_controller.dart';
 
 class BluetoothManager {
-  final FlutterBluePlus flutterBlue = FlutterBluePlus.instance;
+  final FlutterBluePlus flutterBlue = FlutterBluePlus();
   BluetoothDevice? connectedDevice;
   final StreamController<String> _connectionStatusController = StreamController<String>.broadcast();
   Map<String, String> _inputMappings = {};
@@ -28,6 +28,9 @@ class BluetoothManager {
       await Permission.bluetooth.request();
     }
 
+    // Initialize FlutterBluePlus
+    await FlutterBluePlus.turnOn();
+    
     // Initialize virtual controller
     _virtualController = VirtualGameController();
     await _virtualController!.initialize();
@@ -41,14 +44,14 @@ class BluetoothManager {
       _connectionStatusController.add('Scanning...');
       
       // Start scanning
-      await flutterBlue.startScan(timeout: const Duration(seconds: 4));
+      await FlutterBluePlus.startScan(timeout: const Duration(seconds: 4));
       
       // Listen to scan results
-      flutterBlue.scanResults.listen((results) async {
+      FlutterBluePlus.scanResults.listen((results) async {
         for (ScanResult result in results) {
           // You might want to filter devices based on name or service UUID
           if (result.device.name.toLowerCase().contains('controller')) {
-            await flutterBlue.stopScan();
+            await FlutterBluePlus.stopScan();
             await _connectToDevice(result.device);
             break;
           }
