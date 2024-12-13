@@ -1,28 +1,63 @@
 import 'package:flutter/services.dart';
 
 class VirtualGameController {
-  // Placeholder for controller input states
-  Map<String, dynamic> _inputStates = {};
+  static const platform = MethodChannel('virtual_game_controller');
+  bool _isInitialized = false;
 
-  void initialize() {
-    // Placeholder for initialization logic
-    print('Virtual game controller initialized.');
+  Future<void> initialize() async {
+    try {
+      final result = await platform.invokeMethod('registerController');
+      print('Virtual controller initialized: $result');
+      _isInitialized = true;
+    } catch (e) {
+      print('Failed to initialize virtual controller: $e');
+      rethrow;
+    }
   }
 
-  void connect() {
-    // Placeholder for connection logic (using Game Controller framework)
-    print('Attempting to connect virtual controller...');
+  Future<void> sendButtonInput(String button, bool isPressed) async {
+    if (!_isInitialized) return;
+
+    try {
+      await platform.invokeMethod('sendInputEvent', {
+        'type': 'button',
+        'button': button,
+        'value': isPressed ? 1.0 : 0.0,
+      });
+    } catch (e) {
+      print('Failed to send button input: $e');
+    }
   }
 
-  static const platform = MethodChannel('com.example.myapp/game_controller');
+  Future<void> sendTriggerInput(String trigger, double value) async {
+    if (!_isInitialized) return;
 
-  Future<void> registerController() async {
-    // Placeholder for registering the virtual controller
-    print('Registering virtual controller with Game Controller framework...');
+    try {
+      await platform.invokeMethod('sendInputEvent', {
+        'type': 'trigger',
+        'trigger': trigger,
+        'value': value,
+      });
+    } catch (e) {
+      print('Failed to send trigger input: $e');
+    }
   }
 
-  Future<void> sendInputEvent(String input, dynamic value) async {
-    // Placeholder for sending input events to the Game Controller framework
-    print('Sending input event: $input = $value');
+  Future<void> sendDPadInput(String direction, bool isPressed) async {
+    if (!_isInitialized) return;
+
+    try {
+      await platform.invokeMethod('sendInputEvent', {
+        'type': 'dpad',
+        'direction': direction,
+        'value': isPressed ? 1.0 : 0.0,
+      });
+    } catch (e) {
+      print('Failed to send d-pad input: $e');
+    }
+  }
+
+  void dispose() {
+    // Clean up any resources if needed
   }
 }

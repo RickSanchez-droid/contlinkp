@@ -1,20 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
+import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import 'bluetooth_manager.dart'; // Import BluetoothManager
 
-void main() {
-  runApp(const ControllerMapperApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final BluetoothManager bluetoothManager = BluetoothManager();
+  await bluetoothManager.initialize();
+  runApp(ControllerMapperApp(bluetoothManager: bluetoothManager));
 }
 
 class ControllerMapperApp extends StatelessWidget {
-  const ControllerMapperApp({super.key});
+  final BluetoothManager bluetoothManager;
+  
+  const ControllerMapperApp({
+    required this.bluetoothManager,
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {
-    final BluetoothManager bluetoothManager = BluetoothManager(); // Create an instance
-
     return StatefulBuilder(
       builder: (context, setState) {
         bluetoothManager.connectionStatus.listen((status) {
