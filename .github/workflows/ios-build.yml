@@ -5,11 +5,11 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
-  workflow_dispatch:  # Allows manual triggering
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: macos-latest  # Required for iOS builds
+    runs-on: macos-latest
     
     steps:
     - uses: actions/checkout@v3
@@ -28,10 +28,27 @@ jobs:
     
     - name: Install Flutter dependencies
       run: flutter pub get
-    
+      
+    - name: Create iOS files
+      run: |
+        flutter create --platforms=ios .
+        
+    - name: Clean iOS build
+      run: |
+        cd ios
+        rm -rf Pods
+        rm -rf Podfile.lock
+        cd ..
+        
+    - name: Install CocoaPods
+      run: |
+        sudo gem install cocoapods
+        
     - name: Install CocoaPods dependencies
-      working-directory: ios
-      run: pod install
+      run: |
+        cd ios
+        pod install
+        cd ..
     
     - name: Build iOS
       run: |
@@ -48,4 +65,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: ios-build
-        path: build/ios/iphoneos/app.ipa 
+        path: build/ios/iphoneos/app.ipa
