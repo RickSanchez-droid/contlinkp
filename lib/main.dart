@@ -20,6 +20,9 @@ class ControllerMapperApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String? selectedMapping;
+    String? selectedButton;
+
     return StatefulBuilder(
       builder: (context, setState) {
         bluetoothManager.connectionStatus.listen((status) {
@@ -87,20 +90,22 @@ class ControllerMapperApp extends StatelessWidget {
                   hint: const Text('Select Mapping'),
                 ),
                 // Dropdown to select PlayStation button
-                String? selectedMapping; 
-                String? selectedButton; 
-                DropdownButton<String>( 
-                    items: ['A', 'B', 'X', 'Y', 'L1', 'R1', 'L2', 'R2', 'D-Pad Up', 'D-Pad Down', 'D-Pad Left', 'D-Pad Right']
-                        .map((button) {
-                      return DropdownMenuItem<String>(
-                        value: button,
-                        child: Text(button),
-                      );
-                    }).toList(),
-                    onChanged: (selectedButtonValue) {
+                DropdownButton<String>(
+                  items: ['A', 'B', 'X', 'Y', 'L1', 'R1', 'L2', 'R2', 'D-Pad Up', 'D-Pad Down', 'D-Pad Left', 'D-Pad Right']
+                      .map((button) {
+                    return DropdownMenuItem<String>(
+                      value: button,
+                      child: Text(button),
+                    );
+                  }).toList(),
+                  onChanged: (selectedButtonValue) {
+                    setState(() {
                       selectedButton = selectedButtonValue;
-                    },
-                    hint: const Text('Select Button')),
+                    });
+                  },
+                  value: selectedButton,
+                  hint: const Text('Select Button')
+                ),
                 ElevatedButton(
                   onPressed: () {
                     if (selectedMapping != null && selectedButton != null) {
