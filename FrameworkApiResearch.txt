@@ -1,0 +1,12 @@
+Key findings relevant to our project include:
+
+GCController: The central class for interacting with controllers. It provides properties for accessing button presses, joystick positions, and other input data. Crucially, it allows registering a virtual controller, which is how our app will interact with MFi-compatible games.
+
+GCControllerButtonInput: Represents a button on a controller. Provides properties like value (a float from 0.0 to 1.0), indicating the button's pressed state.
+
+GCControllerAxisInput: Represents an analog input like a joystick axis or trigger. Also provides a value, but as a float indicating the position along the axis.
+
+Virtual Controllers: Our app will need to create a GCController subclass to act as a virtual controller. This virtual controller will then receive inputs from our Bluetooth controller and translate them into a format the Game Controller framework understands.
+
+Input Mapping: The translation of inputs from the Bluetooth controller to the virtual controller's GCControllerButtonInput and GCControllerAxisInput properties is where most of our custom logic will reside.
+

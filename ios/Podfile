@@ -1,0 +1,3 @@
+platform :ios, '12.0'  # Match minimum iOS version
+
+# ... rest of the file ... 

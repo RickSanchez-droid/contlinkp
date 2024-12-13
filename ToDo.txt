@@ -1,0 +1,101 @@
+Completed: none 
+In Progress: Implement Bluetooth controller detection using CoreBluetooth (high priority), the bluetooth scan method has been implemented with a placeholder filter
+In Progress: Implemented connectToDevice method in bluetooth_manager.dart handling connection asynchronously and returning a BluetoothConnection object upon success. Includes error handling.
+In Progress: Implemented handleIncomingData in bluetooth_manager.dart. Reads data from the connection, uses placeholder parsing to generate controller input events, and emits them via a StreamController.
+In Progress: Created VirtualGameController class in virtual_controller.dart with placeholder methods for initialization and connection.
+In Progress: Implemented initialize method in VirtualGameController (currently prints confirmation message).
+In Progress: Added placeholder implementation for connect method in VirtualGameController.
+In Progress: Created draft input_mapping.json configuration file.
+In Progress: Modified handleIncomingData in bluetooth_manager.dart to use input mapping from input_mapping.json, with placeholder logic for reading the mapping and triggering actions.
+In Progress: Implemented connectToController method in bluetooth_manager.dart (scans for devices, filters for controllers, allows user selection, establishes connection, and returns BluetoothConnection object).
+In Progress: Implemented promptButtonMapping method in bluetooth_manager.dart (displays PlayStation button names, prompts user to press corresponding buttons, captures raw input data, and maps the raw input to PlayStation button names using placeholder logic; mapping data is stored in the BluetoothManager class but not yet written to input_mapping.json).
+In Progress: Implemented saveInputMappingToJson method in bluetooth_manager.dart (writes the mapping data from the BluetoothManager class to input_mapping.json).
+In Progress: Connected the controller connection button in the UI to the connectToController method in BluetoothManager (includes placeholder error handling and feedback).
+In Progress: Modified handleIncomingData method in bluetooth_manager.dart to use the input mapping from input_mapping.json (reads raw input, looks up the mapping, and triggers actions on the virtual controller; includes error handling for missing mappings).
+In Progress: Added a connection status reporting mechanism to BluetoothManager.
+In Progress: Connected the UI to display the connection status from BluetoothManager.
+In Progress: Added a getter method to BluetoothManager to access the input mappings.
+In Progress: Updated the UI in main.dart to display the input mappings.
+In Progress: Added UI elements for editing input mappings in main.dart.
+In Progress: Added a method to BluetoothManager to update input mappings.
+In Progress: Connected the UI elements for editing mappings to the BluetoothManager update method (changes in the UI now update the mappings in BluetoothManager but are not yet saved to input_mapping.json).
+In Progress: Added a save button to the UI in main.dart. 
+In Progress: Ensured the saveInputMappingToJson method in BluetoothManager correctly saves the mappings to input_mapping.json.
+In Progress: Connected the save button action in the UI to the saveInputMappingToJson method in BluetoothManager (pressing the save button now persists the mappings to input_mapping.json).
+In Progress: Added placeholder methods to VirtualGameController for registering with the Game Controller framework and sending input events via platform channels.
+To Do: Create the user interface for controller customization (medium priority)
+To Do: Created a basic UI structure in main.dart (includes placeholders for controller connection, connection status display, and input mapping display).
+To Do: Implement input testing and diagnostic features (medium priority)
+To Do: Optimize for performance and low latency (medium priority)
+To Do: Ensure App Store compliance (high priority)
+To Do: Write documentation (low priority)
+
+
+
+
+Let's create the necessary native (Swift) code to handle the platform channel communication. This code will receive messages from the Dart side (the VirtualGameController methods we just added), register the virtual controller with the Game Controller framework, and send input events to the framework.
+
+Should I proceed with drafting the Swift code?
+
+
+
+
+deahan steyn
+yes continue
+
+Gemini
+I can't directly create and modify Swift files within this environment. However, I can provide you with a code snippet demonstrating the essential structure and logic of the Swift code that should reside in your iOS project, specifically within the portion responsible for handling method channel communication. You would then integrate this into your existing iOS project.
+
+Here's the Swift code draft:
+
+swift
+import Flutter
+import GameController
+
+class VirtualGameControllerPlugin: NSObject, FlutterPlugin {
+    static func register(with registrar: FlutterPluginRegistrar) {
+        let channel = FlutterMethodChannel(name: "virtual_game_controller", binaryMessenger: registrar.messenger())
+        let instance = VirtualGameControllerPlugin()
+        registrar.addMethodCallDelegate(instance, channel: channel)
+    }
+
+    func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
+        switch call.method {
+        case "registerController":
+            // Implement controller registration logic here.
+            // Create a GCController subclass and register it with the system.
+            result("Controller registered") // Replace with actual result
+        case "sendInputEvent":
+            // Extract input event data from the call.arguments
+            // Translate the data and send it to the Game Controller framework.
+            result("Input event sent") // Replace with actual result
+
+        default:
+            result(FlutterMethodNotImplemented)
+        }
+    }
+}
+
+
+Explanation:
+
+Import Statements: Import the Flutter and GameController frameworks.
+
+Plugin Class: Create a class conforming to the FlutterPlugin protocol.
+
+Method Channel: Establish a method channel named "virtual_game_controller" for communication.
+
+Method Handling: Implement the handle method to respond to method calls from Dart:
+
+"registerController": Placeholder for the logic to register the virtual controller.
+"sendInputEvent": Placeholder for translating and sending input events to the Game Controller framework.
+Integration Steps (in your iOS project):
+
+Add this Swift code to your iOS project.
+
+Ensure the necessary framework imports are present in your Xcode project settings.
+
+In your Dart code (VirtualGameController), replace the placeholder method calls with actual calls to the method channel. Use methodChannel.invokeMethod(...) to communicate with the Swift code.
+
+Fill in the placeholders in the Swift code with the actual implementation for registering the virtual controller and forwarding the input events.
+

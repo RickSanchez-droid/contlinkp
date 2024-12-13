@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Existing entries -->
+    
+    <!-- Add Bluetooth permissions -->
+    <key>NSBluetoothAlwaysUsageDescription</key>
+    <string>This app needs Bluetooth access to connect to game controllers</string>
+    <key>NSBluetoothPeripheralUsageDescription</key>
+    <string>This app needs Bluetooth access to connect to game controllers</string>
+    
+    <!-- Add Game Controller framework capabilities -->
+    <key>UISupportedExternalAccessoryProtocols</key>
+    <array>
+        <string>com.apple.gamecontroller</string>
+    </array>
+</dict>
+</plist> 

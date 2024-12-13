@@ -1,0 +1,117 @@
+Commands to use in order
+Make sure you are in project root direcory first
+first setup 
+
+git init
+git add .
+git commit -m "changes"
+make sure you create a empty repo on git now.
+git remote add origin https://github.com/<your-github-username>/<your-repository-name>.git
+git push -u origin main
+
+if first was already done
+
+git add .
+git commit -m "changes update"
+git push origin main
+
+is my public repo for reference
+
+https://github.com/RickSanchez-droid/contlinkp.git
+
+
+Let's walk through each step of exporting your IDX project to GitHub with more detail:
+
+1. Initialize a Git repository:
+
+Purpose: This sets up a local Git repository in your project folder. Git uses this repository to track changes to your files. If you've already used Git in this project, this step is likely already done.
+
+How: Open your terminal or command prompt, navigate to the root directory of your IDX project (the folder containing your .idx folder, dev.nix, and the rest of your project files), and type the command:
+
+git init
+
+
+
+What to expect: Git will create a hidden .git folder in your project directory. This folder contains all the information about the history of your project. You should see a message in the terminal confirming that the repository has been initialized.
+2. Stage your changes:
+
+Purpose: This step selects which changes you want to include in your next commit. git add . stages all changes in your project's current directory. You can be more selective by staging specific files.
+
+How: In your terminal, still in the root directory of your project, type:
+
+git add .
+
+
+
+ Alternatively, to stage only specific files, replace `.` with the file names, for example:
+
+
+git add .idx/dev.nix README.md
+
+
+
+What to expect: Git will add all modified, added, or deleted files in your project to the staging area. You won't see any output, but the files are now ready for your commit.
+3. Commit your changes:
+
+Purpose: This creates a snapshot of your staged changes. Each commit has a unique identifier and a message describing the changes made. It's crucial to write clear and concise commit messages.
+
+How: In your terminal, use the following command:
+
+git commit -m "Initial commit of my project"
+
+
+
+ Replace `"Initial commit of my project"` with a more specific message explaining what's in the commit. For example:  `"Initial project setup and environment configuration"`
+
+
+What to expect: Git will create a new commit with your message and the changes from the staging area. You'll see a message indicating the new commit's ID.
+4. Create a remote repository:
+
+Purpose: This links your local Git repository to a remote repository on a platform like GitHub. If you don't have a remote repository yet, create one on GitHub.
+
+How:
+
+Go to GitHub (github.com) and create a new repository (make it public or private according to your preferences). Note the URL provided by GitHub for your newly created repository. It will look something like: https://github.com/<your-github-username>/<your-repository-name>.git
+In your terminal, replace the placeholders below with your GitHub username and your repository name, and run this command:
+git remote add origin https://github.com/<your-github-username>/<your-repository-name>.git
+
+
+
+What to expect: Git now knows about your remote repository and refers to it as "origin".
+5. Push to the remote repository:
+
+Purpose: This sends your local commits (including the initial commit) to the remote repository on GitHub.
+
+How: In your terminal:
+
+git push -u origin main
+
+
+
+ If your main branch is named differently, for example `master`, then change `main` to `master`
+
+
+git push -u origin master
+
+
+
+What to expect: Git will upload your commits to the remote repository. You might be prompted for your GitHub username and password (or a personal access token) to authenticate. Upon successful completion, your project, including your .idx/dev.nix file, will be available on GitHub, and other users can now clone your project and use IDX to benefit from your setup.
+
+you do not need to run all the commands again. After the initial export, your local repository is linked to the remote repository on GitHub. Here's the simplified workflow for subsequent exports:
+
+Stage Changes: Use git add . (or git add <specific_file> for individual files) to stage the changes you want to include in the next commit. This adds your updated files to the staging area.
+
+Commit Changes: Create a new commit with a descriptive message explaining the changes you made:
+
+git commit -m "Your descriptive commit message"
+
+
+
+Push Changes: Push the new commit to the remote repository:
+git push origin main
+
+
+
+(Or git push origin master if your main branch is named master)
+
+That's it. Git will only transfer the new changes since your last push, not the entire project again. The -u flag (git push -u origin main) is only used for the first push to establish the upstream tracking branch. After that initial setup, you just need to use git push origin main.

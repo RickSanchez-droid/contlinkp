@@ -1,0 +1,3 @@
+#include "Generated.xcconfig"
+PRODUCT_BUNDLE_IDENTIFIER=com.example.myapp
+DEVELOPMENT_TEAM=YOUR_TEAM_ID 
