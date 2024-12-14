@@ -3,12 +3,16 @@
 <plist version="1.0">
 <dict>
     <key>method</key>
-    <string>development</string>
+    <string>app-store</string>
     <key>teamID</key>
     <string>YOUR_TEAM_ID</string>
     <key>compileBitcode</key>
     <false/>
     <key>bundleIdentifier</key>
     <string>com.dd.contlink</string>
+    <key>uploadSymbols</key>
+    <true/>
+    <key>signingStyle</key>
+    <string>manual</string>
 </dict>
 </plist> 
