@@ -36,6 +36,6 @@
     </array>
     
     <key>CFBundleExecutable</key>
-    <string>contlink</string>
+    <string>Runner</string>
 </dict>
 </plist> 

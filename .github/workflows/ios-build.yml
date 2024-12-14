@@ -59,11 +59,12 @@ jobs:
       run: |
         mkdir -p Payload
         cp -r Runner.app Payload/
-        mv Payload/Runner.app Payload/contlink.app
-        cd Payload/contlink.app
-        ln -sf Info.plist ../Info.plist
+        cd Payload/Runner.app
+        if [ -f "Runner" ]; then
+          mv Runner contlink
+        fi
         cd ../..
-        zip -r app.ipa Payload Info.plist
+        zip -r app.ipa Payload
     
     - name: Upload IPA
       uses: actions/upload-artifact@v4
