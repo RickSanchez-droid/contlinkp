@@ -8,5 +8,7 @@
     <string>YOUR_TEAM_ID</string>
     <key>compileBitcode</key>
     <false/>
+    <key>bundleIdentifier</key>
+    <string>com.dd.contlink</string>
 </dict>
 </plist> 
