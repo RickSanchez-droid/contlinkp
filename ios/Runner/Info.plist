@@ -34,5 +34,8 @@
         <string>bluetooth-central</string>
         <string>bluetooth-peripheral</string>
     </array>
+    
+    <key>CFBundleExecutable</key>
+    <string>contlink</string>
 </dict>
 </plist> 

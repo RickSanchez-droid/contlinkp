@@ -57,9 +57,13 @@ jobs:
     - name: Create IPA
       working-directory: build/ios/iphoneos
       run: |
-        mkdir Payload
-        cp -r Runner.app Payload
-        zip -r app.ipa Payload
+        mkdir -p Payload
+        cp -r Runner.app Payload/
+        mv Payload/Runner.app Payload/contlink.app
+        cd Payload/contlink.app
+        ln -sf Info.plist ../Info.plist
+        cd ../..
+        zip -r app.ipa Payload Info.plist
     
     - name: Upload IPA
       uses: actions/upload-artifact@v4
