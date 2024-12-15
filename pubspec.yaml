@@ -42,6 +42,7 @@ dependencies:
   # Cross-platform Bluetooth packages
   flutter_blue_plus: ^1.31.15  # For BLE devices
   permission_handler: ^11.3.0   # For handling permissions
+  package_info_plus: ^5.0.1    # Add this line
 
 dev_dependencies:
   flutter_test:
