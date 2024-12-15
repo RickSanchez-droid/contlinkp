@@ -57,14 +57,26 @@ jobs:
     - name: Create IPA
       working-directory: build/ios/iphoneos
       run: |
+        # Create Payload directory
         mkdir -p Payload
+        
+        # Copy the app bundle
         cp -r Runner.app Payload/
-        cd Payload/Runner.app
-        if [ -f "Runner" ]; then
-          mv Runner contlink
+        
+        # Ensure the executable exists and has the right name
+        if [ ! -f "Payload/Runner.app/Runner" ]; then
+          echo "Error: Runner executable not found!"
+          exit 1
         fi
-        cd ../..
-        zip -r app.ipa Payload
+        
+        # Make sure executable has proper permissions
+        chmod +x Payload/Runner.app/Runner
+        
+        # Create the IPA
+        zip -qr app.ipa Payload
+        
+        # Verify the IPA contents
+        unzip -l app.ipa
     
     - name: Upload IPA
       uses: actions/upload-artifact@v4
