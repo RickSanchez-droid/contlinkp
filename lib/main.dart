@@ -26,6 +26,18 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
     AppLogger.log('Flutter binding initialized');
     
+    // Show something immediately
+    runApp(
+      const MaterialApp(
+        home: Scaffold(
+          backgroundColor: Colors.white,
+          body: Center(
+            child: CircularProgressIndicator(),
+          ),
+        ),
+      ),
+    );
+    
     final packageInfo = await PackageInfo.fromPlatform();
     AppLogger.log('Bundle ID: ${packageInfo.packageName}');
     AppLogger.log('App Name: ${packageInfo.appName}');
@@ -41,7 +53,31 @@ void main() async {
     AppLogger.log('App started');
   } catch (e, stackTrace) {
     AppLogger.log('Error in initialization: $e\n$stackTrace');
-    runApp(ErrorScreen(error: e.toString()));
+    // Show error directly on screen
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          backgroundColor: Colors.white,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Error: $e',
+                    style: const TextStyle(color: Colors.black),
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }
 
