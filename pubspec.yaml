@@ -20,6 +20,7 @@ version: 1.0.0+1
 
 environment:
   sdk: '>=3.3.0 <4.0.0'
+  flutter: ">=3.19.0"
 
 # Add these platform configurations
 platforms:
@@ -40,9 +41,9 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # Cross-platform Bluetooth packages
-  flutter_blue_plus: ^1.31.15  # For BLE devices
-  permission_handler: ^11.3.0   # For handling permissions
-  package_info_plus: ^5.0.1    # Add this line
+  flutter_blue_plus: ^1.34.5  # Update to latest version
+  permission_handler: ^11.3.1  # Update to latest version
+  package_info_plus: ^5.0.1    # Keep this version for now
 
 dev_dependencies:
   flutter_test:

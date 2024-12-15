@@ -22,31 +22,50 @@ class AppLogger {
 }
 
 void main() {
-  // Wrap everything in a top-level try-catch
+  // Force light mode and add error catching
   runApp(
     MaterialApp(
+      theme: ThemeData.light(),
       home: Scaffold(
-        backgroundColor: Colors.white,  // Explicitly white background
-        body: Builder(
+        backgroundColor: Colors.white,
+        body: ErrorWidget.builder = (FlutterErrorDetails details) {
+          return Container(
+            color: Colors.white,
+            child: Center(
+              child: Text(
+                'Error: ${details.exception}',
+                style: const TextStyle(
+                  color: Colors.red,
+                  fontSize: 16,
+                ),
+              ),
+            ),
+          );
+        },
+        child: Builder(
           builder: (context) {
-            // Initialize the app
+            // Add error reporting
+            FlutterError.onError = (FlutterErrorDetails details) {
+              FlutterError.presentError(details);
+              debugPrint('Error: ${details.exception}');
+            };
+            
             _initializeApp(context);
             
-            // Show loading screen immediately
             return const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                  ),
-                  SizedBox(height: 20),
                   Text(
-                    'Initializing...',
+                    'Loading...',
                     style: TextStyle(
                       color: Colors.black,
-                      fontSize: 18,
+                      fontSize: 24,
                     ),
+                  ),
+                  SizedBox(height: 20),
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
                   ),
                 ],
               ),
