@@ -23,26 +23,27 @@ class AppLogger {
 
 void main() {
   // Force light mode and add error catching
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Container(
+      color: Colors.white,
+      child: Center(
+        child: Text(
+          'Error: ${details.exception}',
+          style: const TextStyle(
+            color: Colors.red,
+            fontSize: 16,
+          ),
+        ),
+      ),
+    );
+  };
+
   runApp(
     MaterialApp(
       theme: ThemeData.light(),
       home: Scaffold(
         backgroundColor: Colors.white,
-        body: ErrorWidget.builder = (FlutterErrorDetails details) {
-          return Container(
-            color: Colors.white,
-            child: Center(
-              child: Text(
-                'Error: ${details.exception}',
-                style: const TextStyle(
-                  color: Colors.red,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-          );
-        },
-        child: Builder(
+        body: Builder(
           builder: (context) {
             // Add error reporting
             FlutterError.onError = (FlutterErrorDetails details) {
