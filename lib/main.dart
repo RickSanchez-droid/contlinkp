@@ -21,22 +21,47 @@ class AppLogger {
   }
 }
 
-void main() async {
+void main() {
+  // Wrap everything in a top-level try-catch
+  runApp(
+    MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.white,  // Explicitly white background
+        body: Builder(
+          builder: (context) {
+            // Initialize the app
+            _initializeApp(context);
+            
+            // Show loading screen immediately
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ),
+                  SizedBox(height: 20),
+                  Text(
+                    'Initializing...',
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 18,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    ),
+  );
+}
+
+Future<void> _initializeApp(BuildContext context) async {
   try {
     WidgetsFlutterBinding.ensureInitialized();
     AppLogger.log('Flutter binding initialized');
-    
-    // Show something immediately
-    runApp(
-      const MaterialApp(
-        home: Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(
-            child: CircularProgressIndicator(),
-          ),
-        ),
-      ),
-    );
     
     final packageInfo = await PackageInfo.fromPlatform();
     AppLogger.log('Bundle ID: ${packageInfo.packageName}');
@@ -49,35 +74,56 @@ void main() async {
     await bluetoothManager.initialize();
     AppLogger.log('BluetoothManager initialized');
 
-    runApp(ControllerMapperApp(bluetoothManager: bluetoothManager));
+    if (context.mounted) {
+      // Replace the loading screen with the actual app
+      runApp(ControllerMapperApp(bluetoothManager: bluetoothManager));
+    }
     AppLogger.log('App started');
   } catch (e, stackTrace) {
     AppLogger.log('Error in initialization: $e\n$stackTrace');
-    // Show error directly on screen
-    runApp(
-      MaterialApp(
-        home: Scaffold(
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, color: Colors.red, size: 48),
-                  const SizedBox(height: 16),
-                  Text(
-                    'Error: $e',
-                    style: const TextStyle(color: Colors.black),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+    if (context.mounted) {
+      // Show error screen
+      runApp(
+        MaterialApp(
+          home: Scaffold(
+            backgroundColor: Colors.white,
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(
+                      Icons.error_outline,
+                      color: Colors.red,
+                      size: 64,
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'Initialization Error',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      e.toString(),
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
 
