@@ -20,112 +20,177 @@ class ControllerMapperApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? selectedMapping;
-    String? selectedButton;
-
-    return StatefulBuilder(
-      builder: (context, setState) {
-        bluetoothManager.connectionStatus.listen((status) {
-          setState(() {});
-        });
-        return MaterialApp(
-          title: 'Controller Mapper',
-          home: Scaffold(
-            appBar: AppBar(
-              title: const Text('Controller Mapper'),
-            ),
-            body: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                // Connection Status
-                Center(
-                  child: Text('Connection Status: ${bluetoothManager.connectionStatus}'),
-                ),
-                // Connect Button
-                ElevatedButton(
-                  onPressed: () {
-                    bluetoothManager.connectToController().then((connection) {
-                      // Handle successful connection
-                      // Update UI to show connection status
-                    }).catchError((error) {
-                      // Handle connection error
-                      // Display error message in UI
-                      print('Connection Error: $error');
-                    });
-                  },
-                  child: const Text('Connect to Controller'),
-                ),
-                // Input Mappings Section
-                const SizedBox(height: 20),
-                const Text('Input Mappings:'),
-                Expanded(
-                  child: bluetoothManager.inputMappings.isNotEmpty
-                      ? ListView.builder(
-                          itemCount: bluetoothManager.inputMappings.length,
-                          itemBuilder: (context, index) {
-                            final mapping = bluetoothManager.inputMappings.entries.elementAt(index);
-                            return ListTile(
-                              title: Text('${mapping.key} : ${mapping.value}'),
-                            );
-                          },
-                        )
-                      : const Center(
-                          child: Text('No mappings configured yet.'),
-                        ),
-                ),
-                // Edit Mappings Section (Placeholder)
-                const SizedBox(height: 20),
-                const Text('Edit Mappings:'),
-                // Dropdown to select mapping
-                DropdownButton<String>(
-                  items: bluetoothManager.inputMappings.keys.map((key) {
-                    return DropdownMenuItem<String>(
-                      value: key,
-                      child: Text(key),
-                    );
-                  }).toList(),
-                  onChanged: (selectedKey) {
-                    // Handle mapping selection
-                  },
-                  hint: const Text('Select Mapping'),
-                ),
-                // Dropdown to select PlayStation button
-                DropdownButton<String>(
-                  items: ['A', 'B', 'X', 'Y', 'L1', 'R1', 'L2', 'R2', 'D-Pad Up', 'D-Pad Down', 'D-Pad Left', 'D-Pad Right']
-                      .map((button) {
-                    return DropdownMenuItem<String>(
-                      value: button,
-                      child: Text(button),
-                    );
-                  }).toList(),
-                  onChanged: (selectedButtonValue) {
-                    setState(() {
-                      selectedButton = selectedButtonValue;
-                    });
-                  },
-                  value: selectedButton,
-                  hint: const Text('Select Button')
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    if (selectedMapping != null && selectedButton != null) {
-                      bluetoothManager.updateInputMapping(selectedMapping!, selectedButton!);
-                      // You might want to trigger a UI update here (setState)
-                      // to reflect the changes in the mappings list
-                    }
-                  },
-                  child: const Text('Update Mapping'),
-                ),
-                // Save Button
-                ElevatedButton(onPressed: () {
-                  bluetoothManager.saveInputMappingToJson();
-                }, child: const Text('Save Mappings')),
-              ],
-            ),
-          ),
-        );
-      },
+    return MaterialApp(
+      title: 'Controller Mapper',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.white,  // Set white background
+        brightness: Brightness.light,
+      ),
+      home: HomeScreen(bluetoothManager: bluetoothManager),
     );
-  } 
+  }
+}
+
+class HomeScreen extends StatefulWidget {
+  final BluetoothManager bluetoothManager;
+
+  const HomeScreen({
+    required this.bluetoothManager,
+    super.key,
+  });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String? selectedMapping;
+  String? selectedButton;
+  String connectionStatus = 'Disconnected';
+
+  @override
+  void initState() {
+    super.initState();
+    // Listen to connection status changes
+    widget.bluetoothManager.connectionStatus.listen((status) {
+      setState(() {
+        connectionStatus = status;
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Controller Mapper'),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Connection Status
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Status: $connectionStatus',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () async {
+                          try {
+                            await widget.bluetoothManager.connectToController();
+                          } catch (e) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Connection error: $e')),
+                              );
+                            }
+                          }
+                        },
+                        child: const Text('Connect to Controller'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              
+              const SizedBox(height: 20),
+              
+              // Mappings Section
+              Text(
+                'Current Mappings',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              Expanded(
+                child: widget.bluetoothManager.inputMappings.isEmpty
+                    ? const Center(
+                        child: Text('No mappings configured'),
+                      )
+                    : ListView.builder(
+                        itemCount: widget.bluetoothManager.inputMappings.length,
+                        itemBuilder: (context, index) {
+                          final entry = widget.bluetoothManager.inputMappings.entries.elementAt(index);
+                          return Card(
+                            child: ListTile(
+                              title: Text('${entry.key} → ${entry.value}'),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () {
+                                  // Add delete functionality
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
+              
+              // Mapping Controls
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      DropdownButton<String>(
+                        isExpanded: true,
+                        hint: const Text('Select Input'),
+                        value: selectedMapping,
+                        items: widget.bluetoothManager.inputMappings.keys
+                            .map((key) => DropdownMenuItem(
+                                  value: key,
+                                  child: Text(key),
+                                ))
+                            .toList(),
+                        onChanged: (value) => setState(() => selectedMapping = value),
+                      ),
+                      const SizedBox(height: 8),
+                      DropdownButton<String>(
+                        isExpanded: true,
+                        hint: const Text('Select Button'),
+                        value: selectedButton,
+                        items: const [
+                          'A', 'B', 'X', 'Y',
+                          'L1', 'R1', 'L2', 'R2',
+                          'D-Pad Up', 'D-Pad Down',
+                          'D-Pad Left', 'D-Pad Right'
+                        ].map((button) => DropdownMenuItem(
+                              value: button,
+                              child: Text(button),
+                            )).toList(),
+                        onChanged: (value) => setState(() => selectedButton = value),
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: selectedMapping != null && selectedButton != null
+                            ? () {
+                                widget.bluetoothManager.updateInputMapping(
+                                  selectedMapping!,
+                                  selectedButton!,
+                                );
+                                setState(() {});
+                              }
+                            : null,
+                        child: const Text('Update Mapping'),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
 }
 
