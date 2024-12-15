@@ -5,6 +5,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'dart:async';
 
 import 'bluetooth_manager.dart'; // Import BluetoothManager
+import 'error_screen.dart';  // Add this import
 
 // Add this class to store logs
 class AppLogger {
