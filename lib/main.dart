@@ -1,13 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
+import 'dart:developer' as developer;
 
 import 'bluetooth_manager.dart'; // Import BluetoothManager
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  final BluetoothManager bluetoothManager = BluetoothManager();
-  await bluetoothManager.initialize();
-  runApp(ControllerMapperApp(bluetoothManager: bluetoothManager));
+  try {
+    WidgetsFlutterBinding.ensureInitialized();
+    developer.log('Flutter binding initialized');
+
+    final BluetoothManager bluetoothManager = BluetoothManager();
+    developer.log('BluetoothManager created');
+
+    await bluetoothManager.initialize();
+    developer.log('BluetoothManager initialized');
+
+    runApp(ControllerMapperApp(bluetoothManager: bluetoothManager));
+    developer.log('App started');
+  } catch (e, stackTrace) {
+    developer.log('Error in initialization: $e\n$stackTrace');
+    // Show error screen instead of crashing
+    runApp(
+      MaterialApp(
+        home: Scaffold(
+          body: Center(
+            child: Text('Error: $e'),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class ControllerMapperApp extends StatelessWidget {
@@ -22,12 +44,29 @@ class ControllerMapperApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Controller Mapper',
+      debugShowCheckedModeBanner: false,  // Remove debug banner
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        scaffoldBackgroundColor: Colors.white,  // Set white background
+        scaffoldBackgroundColor: Colors.white,
         brightness: Brightness.light,
+        // Add more theme configurations
+        appBarTheme: const AppBarTheme(
+          backgroundColor: Colors.blue,
+          foregroundColor: Colors.white,
+        ),
+        cardTheme: CardTheme(
+          elevation: 2,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
       ),
-      home: HomeScreen(bluetoothManager: bluetoothManager),
+      home: Builder(
+        builder: (context) {
+          developer.log('Building HomeScreen');
+          return HomeScreen(bluetoothManager: bluetoothManager);
+        },
+      ),
     );
   }
 }
