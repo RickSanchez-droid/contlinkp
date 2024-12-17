@@ -31,38 +31,84 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:developer' as developer;
+import 'package:flutter/foundation.dart';
 
-void main() {
+void main() async {
+  // Set error handlers as early as possible
+  FlutterError.onError = (FlutterErrorDetails details) {
+    FlutterError.presentError(details);
+    debugPrint('FlutterError: ${details.toString()}');
+  };
+
+  // Handle errors that occur during widget building
+  ErrorWidget.builder = (FlutterErrorDetails details) {
+    return Material(
+      child: Container(
+        color: Colors.red,
+        child: Center(
+          child: Text(
+            'Error: ${details.exception}',
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    );
+  };
+
   try {
-    developer.log('Starting app initialization');
+    debugPrint("Starting app initialization");
     
     // Ensure Flutter bindings are initialized
     WidgetsFlutterBinding.ensureInitialized();
-    developer.log('Flutter bindings initialized');
-    
+    debugPrint("Flutter bindings initialized");
+
     // Run the app inside error zone
     runZonedGuarded(() {
+      // Wrap in a post-frame callback to ensure bindings are ready
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        debugPrint("First frame rendered");
+      });
+      
       runApp(const MyApp());
-      developer.log('App started successfully');
+      debugPrint("App started successfully");
     }, (error, stack) {
-      developer.log('Error during app execution',
-          error: error, stackTrace: stack);
+      debugPrint('Error from runZonedGuarded: $error');
+      debugPrint(stack.toString());
     });
+
   } catch (e, stack) {
-    developer.log('Fatal error during initialization',
-        error: e, stackTrace: stack);
+    debugPrint('Error during initialization: $e');
+    debugPrint(stack.toString());
+    
+    runApp(MaterialApp(
+      home: Scaffold(
+        backgroundColor: Colors.red,
+        body: Center(
+          child: Text(
+            'Initialization Error: $e',
+            style: const TextStyle(color: Colors.white),
+          ),
+        ),
+      ),
+    ));
   }
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("Building MyApp widget");
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Colors.blue, // Changed to make any rendering obvious
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        platform: TargetPlatform.iOS,
+      ),
+      home: const Scaffold(
+        backgroundColor: Colors.blue,
         body: Center(
           child: Text(
             'Hello World',
