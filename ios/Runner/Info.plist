@@ -12,7 +12,7 @@
     
     <!-- Add this near the top of the dict -->
     <key>CFBundleIdentifier</key>
-    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+    <string>com.dd.contlink</string>
     
     <!-- Existing entries -->
     
@@ -38,7 +38,7 @@
     <key>CFBundleExecutable</key>
     <string>Runner</string>
     <key>CFBundleName</key>
-    <string>Runner</string>
+    <string>ContLink</string>
     <key>CFBundleDisplayName</key>
     <string>ContLink</string>
     <key>CADisableMinimumFrameDurationOnPhone</key>
