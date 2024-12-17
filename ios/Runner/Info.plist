@@ -18,9 +18,9 @@
     
     <!-- Add Bluetooth permissions -->
     <key>NSBluetoothAlwaysUsageDescription</key>
-    <string>ContLink needs Bluetooth access to scan for and connect to nearby devices</string>
+    <string>ContLink needs Bluetooth access to scan for and connect to nearby game controllers</string>
     <key>NSBluetoothPeripheralUsageDescription</key>
-    <string>ContLink needs Bluetooth access to scan for and connect to nearby devices</string>
+    <string>ContLink needs Bluetooth access to scan for and connect to nearby game controllers</string>
     
     <!-- Add Game Controller framework capabilities -->
     <key>UISupportedExternalAccessoryProtocols</key>
