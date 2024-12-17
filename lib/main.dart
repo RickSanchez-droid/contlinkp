@@ -14,7 +14,7 @@ void main() {
   };
 
   // Catch platform errors
-  PlatformDispatcher.instance.onError = (error, stack) {
+  WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
     developer.log('Platform Error', error: error, stackTrace: stack);
     // Force show error screen
     runApp(ErrorScreen(error: error.toString()));
