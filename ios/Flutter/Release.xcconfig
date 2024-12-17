@@ -1,4 +1,4 @@
 #include? "Pods/Target Support Files/Pods-Runner/Pods-Runner.release.xcconfig"
 #include "Generated.xcconfig"
 PRODUCT_BUNDLE_IDENTIFIER=com.dd.contlink
-DEVELOPMENT_TEAM=YOUR_TEAM_ID 
+DEVELOPMENT_TEAM=TA9P5T3V89 

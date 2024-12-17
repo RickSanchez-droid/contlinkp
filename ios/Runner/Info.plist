@@ -12,7 +12,7 @@
     
     <!-- Add this near the top of the dict -->
     <key>CFBundleIdentifier</key>
-    <string>com.dd.contlink</string>
+    <string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
     
     <!-- Existing entries -->
     
