@@ -40,21 +40,6 @@ void main() async {
     debugPrint('FlutterError: ${details.toString()}');
   };
 
-  // Handle errors that occur during widget building
-  ErrorWidget.builder = (FlutterErrorDetails details) {
-    return Material(
-      child: Container(
-        color: Colors.red,
-        child: Center(
-          child: Text(
-            'Error: ${details.exception}',
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
-    );
-  };
-
   try {
     debugPrint("Starting app initialization");
     
@@ -64,11 +49,7 @@ void main() async {
 
     // Run the app inside error zone
     runZonedGuarded(() {
-      // Wrap in a post-frame callback to ensure bindings are ready
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        debugPrint("First frame rendered");
-      });
-      
+      debugPrint("About to call runApp");
       runApp(const MyApp());
       debugPrint("App started successfully");
     }, (error, stack) {
@@ -79,18 +60,6 @@ void main() async {
   } catch (e, stack) {
     debugPrint('Error during initialization: $e');
     debugPrint(stack.toString());
-    
-    runApp(MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.red,
-        body: Center(
-          child: Text(
-            'Initialization Error: $e',
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
-    ));
   }
 }
 
@@ -107,17 +76,22 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         platform: TargetPlatform.iOS,
       ),
-      home: const Scaffold(
-        backgroundColor: Colors.blue,
-        body: Center(
-          child: Text(
-            'Hello World',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 32,
+      home: Builder(
+        builder: (context) {
+          debugPrint("Building Scaffold");
+          return const Scaffold(
+            backgroundColor: Colors.blue,
+            body: Center(
+              child: Text(
+                'Hello World',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 32,
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

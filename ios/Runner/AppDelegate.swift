@@ -27,27 +27,12 @@ import Foundation
     
     NSLog("AppDelegate - Application will launch")
     
-    do {
-      NSLog("AppDelegate - Setting up window")
-      guard let window = self.window else {
-        NSLog("Window is nil!")
-        return false
-      }
-      
-      let controller = FlutterViewController()
-      window.rootViewController = controller
-      window.makeKeyAndVisible()
-      NSLog("AppDelegate - Flutter controller initialized")
-      
-      GeneratedPluginRegistrant.register(with: self)
-      NSLog("AppDelegate - Plugins registered")
-      
-      logStackTrace()
-      return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-    } catch {
-      NSLog("Error in AppDelegate: \(error)")
-      logStackTrace()
-      return false
-    }
+    NSLog("AppDelegate - Flutter controller initialized")
+    
+    GeneratedPluginRegistrant.register(with: self)
+    NSLog("AppDelegate - Plugins registered")
+    
+    logStackTrace()
+    return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 } 
