@@ -1,1 +1,22 @@
- 
+name: iOS Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.13.9'
+          channel: 'stable'
+      - run: flutter pub get
+      - run: flutter clean
+      - run: cd ios && rm -rf Pods Podfile.lock && pod deintegrate && pod cache clean --all && pod repo update && pod install && cd ..
+      - run: flutter build ios --release --no-codesign 
