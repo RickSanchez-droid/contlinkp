@@ -34,20 +34,19 @@ import 'dart:developer' as developer;
 import 'package:flutter/foundation.dart';
 
 void main() async {
-  // Set error handlers as early as possible
-  FlutterError.onError = (FlutterErrorDetails details) {
-    FlutterError.presentError(details);
-    debugPrint('FlutterError: ${details.toString()}');
-  };
-
   try {
     debugPrint("Starting app initialization");
     
     // Ensure Flutter bindings are initialized
     WidgetsFlutterBinding.ensureInitialized();
     debugPrint("Flutter bindings initialized");
+    
+    // Add platform channel error handler
+    ServicesBinding.instance.defaultBinaryMessenger.setMessageHandler('crash', (message) async {
+      debugPrint('Received crash message: $message');
+      return null;
+    });
 
-    // Run the app inside error zone
     runZonedGuarded(() {
       debugPrint("About to call runApp");
       runApp(const MyApp());
@@ -56,7 +55,7 @@ void main() async {
       debugPrint('Error from runZonedGuarded: $error');
       debugPrint(stack.toString());
     });
-
+    
   } catch (e, stack) {
     debugPrint('Error during initialization: $e');
     debugPrint(stack.toString());
@@ -78,16 +77,13 @@ class MyApp extends StatelessWidget {
       ),
       home: Builder(
         builder: (context) {
-          debugPrint("Building Scaffold");
-          return const Scaffold(
-            backgroundColor: Colors.blue,
-            body: Center(
+          debugPrint("Building home widget");
+          return Container(
+            color: Colors.blue,
+            child: const Center(
               child: Text(
                 'Hello World',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                ),
+                style: TextStyle(color: Colors.white, fontSize: 32),
               ),
             ),
           );
