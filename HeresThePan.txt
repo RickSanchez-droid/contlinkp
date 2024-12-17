@@ -1,0 +1,20 @@
+we removed the bluetooth code and the package info code.
+we removed map code.
+we removed the initial loading code.
+we removed the main.dart code.
+we removed the bluetooth_manager.dart code.
+we removed the error_screen.dart code.
+we removed the initial_loading.dart code.
+we removed ui code.
+
+current state:
+
+Here's the plan:
+First, get the basic app showing something (loading indicator and status text)
+Verify initialization is working
+Add back the Bluetooth manager initialization
+Add back the UI components one section at a time:
+App bar
+Connection status
+Mapping section
+Mapping controls
