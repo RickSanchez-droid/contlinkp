@@ -35,7 +35,7 @@ jobs:
         
     - name: Update bundle identifier
       run: |
-          sed -i '' 's/com.example.contlinkp/com.dd.contlink/g' ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' 's/com.dd.contlinkp/com.dd.contlink/g' ios/Runner.xcodeproj/project.pbxproj
         
     - name: Install CocoaPods
       run: |
