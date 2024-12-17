@@ -31,7 +31,11 @@ jobs:
     - name: Clean iOS build thoroughly
       run: |
           rm -rf ios
-          flutter create --platforms=ios .
+          flutter create --platforms=ios --org com.dd .
+        
+    - name: Update bundle identifier
+      run: |
+          sed -i '' 's/com.example.contlinkp/com.dd.contlink/g' ios/Runner.xcodeproj/project.pbxproj
         
     - name: Install CocoaPods
       run: |
