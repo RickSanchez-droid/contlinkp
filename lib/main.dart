@@ -1,3 +1,4 @@
+//this is the main file for contlink
 import 'package:flutter/material.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 import 'bluetooth_manager.dart';
