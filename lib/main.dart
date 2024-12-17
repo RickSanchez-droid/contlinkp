@@ -2,30 +2,45 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
 
+void _logError(String message, dynamic error, StackTrace? stack) {
+  developer.log(message, error: error, stackTrace: stack);
+  print('ERROR: $message - $error');
+}
+
 void main() {
-  // Catch all errors, including platform errors
   try {
+    developer.log('App starting...');
+    print('App starting...');
+    
     WidgetsFlutterBinding.ensureInitialized();
+    developer.log('Flutter binding initialized');
     
     FlutterError.onError = (FlutterErrorDetails details) {
-      FlutterError.presentError(details);
-      developer.log('Flutter Error: ${details.exception}', error: details);
-      // Force show error screen
+      _logError('Flutter Error', details.exception, details.stack);
       runApp(ErrorScreen(error: details.exception.toString()));
     };
 
-    // Catch platform errors
-    WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
-      developer.log('Platform Error', error: error, stackTrace: stack);
-      // Force show error screen
+    PlatformDispatcher.instance.onError = (error, stack) {
+      _logError('Platform Error', error, stack);
       runApp(ErrorScreen(error: error.toString()));
       return true;
     };
 
-    runApp(const InitialLoadingApp());
+    try {
+      runApp(const InitialLoadingApp());
+    } catch (e, stack) {
+      _logError('Error in runApp', e, stack);
+      runApp(ErrorScreen(error: e.toString()));
+    }
   } catch (e, stack) {
-    developer.log('Error in main()', error: e, stackTrace: stack);
-    runApp(ErrorScreen(error: e.toString()));
+    _logError('Fatal Error in main()', e, stack);
+    runApp(MaterialApp(
+      home: Scaffold(
+        body: Center(
+          child: Text('Fatal Error: $e'),
+        ),
+      ),
+    ));
   }
 }
 
@@ -83,17 +98,23 @@ class ErrorScreen extends StatelessWidget {
 }
 
 class InitialLoadingApp extends StatelessWidget {
-  const InitialLoadingApp({super.key});
+  const InitialLoadingApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        scaffoldBackgroundColor: Colors.white,
+      home: Scaffold(
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+              CircularProgressIndicator(),
+              SizedBox(height: 16),
+              Text('Loading...'),
+            ],
+          ),
+        ),
       ),
-      home: const LoadingScreen(),
     );
   }
 }
