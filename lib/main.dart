@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
 import 'package:flutter/services.dart';
+import 'dart:ui' show PlatformDispatcher;
 
 void _logError(String message, dynamic error, StackTrace? stack) {
   developer.log(message, error: error, stackTrace: stack);
