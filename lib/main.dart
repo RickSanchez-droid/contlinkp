@@ -1,7 +1,16 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 void main() {
-  runApp(const MyApp());
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    print('Flutter binding initialized'); // Debug print
+    
+    runApp(const MyApp());
+  }, (error, stack) {
+    print('Error: $error');
+    print('Stack trace: $stack');
+  });
 }
 
 class MyApp extends StatelessWidget {
