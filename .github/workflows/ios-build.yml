@@ -28,18 +28,10 @@ jobs:
     - name: Install Flutter dependencies
       run: flutter pub get
       
-    - name: Create iOS files (if needed)
+    - name: Clean iOS build thoroughly
       run: |
-          if [ ! -d "ios" ]; then
-              flutter create --platforms=ios .
-          fi
-        
-    - name: Clean iOS build
-      run: |
-          cd ios
-          rm -rf Pods
-          rm -rf Podfile.lock
-          cd ..
+          rm -rf ios
+          flutter create --platforms=ios .
         
     - name: Install CocoaPods
       run: |
@@ -72,7 +64,7 @@ jobs:
           echo "iOS build completed successfully."
 
     - name: Create IPA
-      working-directory: build/ios/iphoneos
+      working_directory: build/ios/iphoneos
       run: |
         mkdir -p Payload
         cp -r Runner.app Payload/
