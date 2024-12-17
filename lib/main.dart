@@ -4,27 +4,27 @@ import 'package:flutter/services.dart';
 
 void main() {
   // Catch all errors, including platform errors
-  WidgetsFlutterBinding.ensureInitialized();
-  
-  FlutterError.onError = (FlutterErrorDetails details) {
-    FlutterError.presentError(details);
-    developer.log('Flutter Error: ${details.exception}', error: details);
-    // Force show error screen
-    runApp(ErrorScreen(error: details.exception.toString()));
-  };
-
-  // Catch platform errors
-  WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
-    developer.log('Platform Error', error: error, stackTrace: stack);
-    // Force show error screen
-    runApp(ErrorScreen(error: error.toString()));
-    return true;
-  };
-
   try {
+    WidgetsFlutterBinding.ensureInitialized();
+    
+    FlutterError.onError = (FlutterErrorDetails details) {
+      FlutterError.presentError(details);
+      developer.log('Flutter Error: ${details.exception}', error: details);
+      // Force show error screen
+      runApp(ErrorScreen(error: details.exception.toString()));
+    };
+
+    // Catch platform errors
+    WidgetsBinding.instance.platformDispatcher.onError = (error, stack) {
+      developer.log('Platform Error', error: error, stackTrace: stack);
+      // Force show error screen
+      runApp(ErrorScreen(error: error.toString()));
+      return true;
+    };
+
     runApp(const InitialLoadingApp());
   } catch (e, stack) {
-    developer.log('Error in runApp', error: e, stackTrace: stack);
+    developer.log('Error in main()', error: e, stackTrace: stack);
     runApp(ErrorScreen(error: e.toString()));
   }
 }
@@ -117,10 +117,17 @@ class _LoadingScreenState extends State<LoadingScreen> {
 
   Future<void> _initializeApp() async {
     try {
+      developer.log('Starting app initialization');
+      
       setState(() => _status = 'Initializing Flutter binding...');
-      await Future.delayed(const Duration(seconds: 1)); // Give UI time to render
-
+      await Future.delayed(const Duration(milliseconds: 100)); // Shorter delay
+      
+      developer.log('Flutter binding initialized');
+      setState(() => _status = 'Setting up services...');
+      
       // Add any other initialization here...
+      
+      developer.log('App initialization complete');
       
     } catch (e, stack) {
       developer.log('Error during initialization', error: e, stackTrace: stack);
@@ -128,6 +135,8 @@ class _LoadingScreenState extends State<LoadingScreen> {
         _status = 'Error: $e';
         _hasError = true;
       });
+      // Re-throw to trigger error screen
+      throw e;
     }
   }
 
