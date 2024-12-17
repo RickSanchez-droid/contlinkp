@@ -1,15 +1,32 @@
 import 'package:flutter/material.dart';
 import 'dart:developer' as developer;
+import 'package:flutter/services.dart';
 
 void main() {
-  // Catch all errors
+  // Catch all errors, including platform errors
+  WidgetsFlutterBinding.ensureInitialized();
+  
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
     developer.log('Flutter Error: ${details.exception}', error: details);
+    // Force show error screen
+    runApp(ErrorScreen(error: details.exception.toString()));
   };
 
-  // Force the app to show something immediately
-  runApp(const InitialLoadingApp());
+  // Catch platform errors
+  PlatformDispatcher.instance.onError = (error, stack) {
+    developer.log('Platform Error', error: error, stackTrace: stack);
+    // Force show error screen
+    runApp(ErrorScreen(error: error.toString()));
+    return true;
+  };
+
+  try {
+    runApp(const InitialLoadingApp());
+  } catch (e, stack) {
+    developer.log('Error in runApp', error: e, stackTrace: stack);
+    runApp(ErrorScreen(error: e.toString()));
+  }
 }
 
 class InitialLoadingApp extends StatelessWidget {
@@ -37,6 +54,7 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
   String _status = 'Starting...';
+  bool _hasError = false;
 
   @override
   void initState() {
@@ -47,20 +65,23 @@ class _LoadingScreenState extends State<LoadingScreen> {
   Future<void> _initializeApp() async {
     try {
       setState(() => _status = 'Initializing Flutter binding...');
-      WidgetsFlutterBinding.ensureInitialized();
-      developer.log('Flutter binding initialized');
+      await Future.delayed(const Duration(seconds: 1)); // Give UI time to render
 
-      // Initialize other components here...
+      // Add any other initialization here...
       
     } catch (e, stack) {
       developer.log('Error during initialization', error: e, stackTrace: stack);
-      setState(() => _status = 'Error: $e');
+      setState(() {
+        _status = 'Error: $e';
+        _hasError = true;
+      });
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Center(
           child: Padding(
@@ -68,14 +89,21 @@ class _LoadingScreenState extends State<LoadingScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CircularProgressIndicator(
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
-                ),
+                if (!_hasError)
+                  const CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                  )
+                else
+                  const Icon(
+                    Icons.error_outline,
+                    color: Colors.red,
+                    size: 48,
+                  ),
                 const SizedBox(height: 24),
                 Text(
                   _status,
-                  style: const TextStyle(
-                    color: Colors.black,
+                  style: TextStyle(
+                    color: _hasError ? Colors.red : Colors.black,
                     fontSize: 16,
                   ),
                   textAlign: TextAlign.center,
