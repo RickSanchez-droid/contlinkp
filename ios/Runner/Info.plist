@@ -41,5 +41,11 @@
     <string>Runner</string>
     <key>CFBundleDisplayName</key>
     <string>ContLink</string>
+    <key>CADisableMinimumFrameDurationOnPhone</key>
+    <true/>
+    <key>UIApplicationSupportsIndirectInputEvents</key>
+    <true/>
+    <key>UIViewControllerBasedStatusBarAppearance</key>
+    <false/>
 </dict>
 </plist> 
